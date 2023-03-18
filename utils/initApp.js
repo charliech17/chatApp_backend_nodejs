@@ -12,6 +12,7 @@ class initApp {
         app.use((req, res, next) => {
             const corsWhitelist = [
                 process.env.LOCAL_PORT,
+                process.env.FRONTEND_DOMIN,
             ];
             if (corsWhitelist.indexOf(req.headers.origin) !== -1) {
                 res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
