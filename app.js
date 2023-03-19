@@ -4,10 +4,11 @@
 const express    = require('express');
 const { createServer } = require("http");
 const app        = express();
+const httpServer = createServer(app);
 const initApp    = require('./utils/initApp')
 const initRoutes = require('./utils/initRoutes')
 const initSocketIO = require('./utils/initSocket_IO')
-const httpServer = createServer(app);
+
 
 // @ 設定
 new initApp(app)
