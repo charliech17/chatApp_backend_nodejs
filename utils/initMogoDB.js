@@ -35,7 +35,6 @@ class initMogoDB {
                 ).catch(
                     (err) => {
                         client.close()
-                        alert(err)
                         throw new Error(err)
                     }
                 ); 
@@ -51,7 +50,6 @@ class initMogoDB {
             })
             .catch(err => {
                 client.close()
-                alert(err)
                 throw new Error(err)
             })
     }

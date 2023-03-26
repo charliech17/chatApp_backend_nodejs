@@ -10,10 +10,10 @@ class initSocketIO{
         });
 
         io.on("connection", (socket) => {
-            console.log('connect!!!',socket.id)
+            io.emit('userConnection',)
             socket.on('hello',(data)=> {
                 console.log('connect success',data)
-                io.emit('asd','嘿嘿' + ' ' + data.name)
+                io.emit('confirmConnection','嘿嘿' + ' ' + data.name)
             })
 
             socket.on('JoinRoom',(data)=> {
