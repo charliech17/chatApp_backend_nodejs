@@ -23,22 +23,23 @@ class initSocketIO{
                 userLiet[Object.keys(data)[0]] = Object.values(data)[0]
                 if(!roomInfo.userList) {
                     setRTDB_Data(roomPath + '/userList', {...data})
-                    io.emit('roomJoinSuccess',{})
+                    socket.join(Object.values(data)[0].roomPath)
+                    io.to(socket.id).emit('roomJoinSuccess',[])
                 } else {
                     const peerIDList = Object.values(roomInfo.userList).map((item) => item.peerID)
-                    console.log(peerIDList,Object.values(roomInfo))
-                    io.emit('roomJoinSuccess',peerIDList)
                     const newUserList = {...roomInfo.userList,...data}
                     setRTDB_Data(roomPath + '/userList', newUserList)
+                    console.log(peerIDList,Object.values(roomInfo))
+                    socket.join(Object.values(data)[0].roomPath)
+                    io.to(socket.id).emit('roomJoinSuccess',peerIDList)
                 }
-
-                // TODO server告訴client已完成&該房間人數
             })
 
             socket.on('disconnect', async () => {
                 if(userLiet[[socket.id]]) {
                     const keyRoomPath = userLiet[[socket.id]].roomPath
                     const FullroomPath = `${process.env.FIREBASE_RTDB_KEY}${keyRoomPath}/userList/` + socket.id
+                    io.in(userLiet[[socket.id]].roomPath).emit('leaveRoom',{leavePeer: userLiet[[socket.id]].peerID})
                     delete userLiet[[socket.id]]
                     console.log('user leave',socket.id,userLiet)
                     setRTDB_Data(FullroomPath, null)
