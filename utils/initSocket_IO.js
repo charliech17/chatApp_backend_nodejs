@@ -35,6 +35,11 @@ class initSocketIO{
                 }
             })
 
+            socket.on('toggleBackground',(data)=> {
+                console.log('toggleBackground',data)
+                io.to(data.roomPath).emit('userToggleBackground',data)
+            })
+
             socket.on('disconnect', async () => {
                 if(userLiet[[socket.id]]) {
                     const keyRoomPath = userLiet[[socket.id]].roomPath
