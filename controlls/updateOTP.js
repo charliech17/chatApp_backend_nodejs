@@ -1,4 +1,5 @@
 const initMogoDB = require('../utils/initMogoDB')
+const { sendEmail } = require('../utils/email')
 
 
 exports.updateUserOTP = async (req, res, next) => {
@@ -6,7 +7,7 @@ exports.updateUserOTP = async (req, res, next) => {
 
     // 已經打過otp狀況 -> 確認次數是否超過3次，確認發送時間是否是兩分鐘內
     // TODO userID 從req.body.uid拿
-    const userID = 'testID2'
+    const userID = 'testID123'
     const userData =  await checkIsUser(userID)
     console.log(userID,' userData ',userData)
     // - 非首次驗證碼
@@ -58,10 +59,18 @@ exports.updateUserOTP = async (req, res, next) => {
     else {
         // 狀況成功 -> 產生六碼隨機數字，存到db中，
         // TODO發信給使用者
-        await saveRandomCodeToDB(userID,1)
+        const otpCode = generateRandomCode()
+        await saveRandomCodeToDB(userID,1,otpCode)
+
+        const emailInfo = {
+            reciver: 'test@gmail.com',
+            subject: '登入chatApp的otp碼',
+            innerTxt: `您登入chatApp的otp碼為：  ${otpCode}`,
+        }
+        await sendEmail(emailInfo)
 
         res.status(200).json({
-            note: 'update Success'
+            note: '已發信給使用者'
         });
     }
 };
@@ -80,10 +89,10 @@ const generateRandomCode = () => {
 }
 
 
-const saveRandomCodeToDB = async (userID,sendTimes) => {
+const saveRandomCodeToDB = async (userID,sendTimes,otpCode) => {
     const insertData = {
         userID,
-        otpcode: generateRandomCode(),
+        otpcode: otpCode,
         expired: new Date(new Date().getTime() + 120000),  // 120000秒為兩分鐘
         sendTimes
     }
