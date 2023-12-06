@@ -1,5 +1,6 @@
 const initMogoDB = require('../utils/initMogoDB')
 const { sendEmail } = require('../utils/email')
+const path = require("path")
 
 
 exports.updateUserOTP = async (req, res, next) => {
@@ -7,7 +8,7 @@ exports.updateUserOTP = async (req, res, next) => {
 
     // 已經打過otp狀況 -> 確認次數是否超過3次，確認發送時間是否是兩分鐘內
     // TODO userID 從req.body.uid拿
-    const userID = 'testID123'
+    const userID = 'testID12334'
     const userData =  await checkIsUser(userID)
     console.log(userID,' userData ',userData)
     // - 非首次驗證碼
@@ -66,6 +67,16 @@ exports.updateUserOTP = async (req, res, next) => {
             reciver: 'test@gmail.com',
             subject: '登入chatApp的otp碼',
             innerTxt: `您登入chatApp的otp碼為：  ${otpCode}`,
+            attachments: [{
+                filename: 'index-logo.jpg',
+                path: path.join(__dirname, "../static/mailImg/dlimg.jpg"),
+                cid: 'dlimg'
+            }],
+            html: `
+            <main style='display:flex;justify-content: center;'>
+                <div>您登入chatApp的otp碼為：  ${otpCode}</div>
+                <img style="margin-top: 20px;" src="cid:dlimg"/>
+            </main>`
         }
         await sendEmail(emailInfo)
 

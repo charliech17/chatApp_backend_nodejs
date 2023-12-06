@@ -16,6 +16,8 @@ const sendEmail = async (emailInfo) => {
         to: emailInfo.reciver,
         subject: emailInfo.subject,
         text: emailInfo.innerTxt,
+        html: emailInfo.html,
+        attachments: emailInfo.attachments
     };
 
     transporter.sendMail(mailOptions, (err, info) => {
