@@ -5,10 +5,13 @@ const path = require("path")
 
 exports.updateUserOTP = async (req, res, next) => {
     // TODO安全性設定
-
+    const userID = req.body.uid
+    if(!userID) {
+        return res.status(400).json({
+            note: 'req資料不正確'
+        });
+    }
     // 已經打過otp狀況 -> 確認次數是否超過3次，確認發送時間是否是兩分鐘內
-    // TODO userID 從req.body.uid拿
-    const userID = 'testID12334'
     const userData =  await checkIsUser(userID)
     console.log(userID,' userData ',userData)
     // - 非首次驗證碼
@@ -64,7 +67,7 @@ exports.updateUserOTP = async (req, res, next) => {
         await saveRandomCodeToDB(userID,1,otpCode)
 
         const emailInfo = {
-            reciver: 'test@gmail.com',
+            reciver: userID,
             subject: '登入chatApp的otp碼',
             innerTxt: `您登入chatApp的otp碼為：  ${otpCode}`,
             attachments: [{

@@ -81,6 +81,19 @@ class initMogoDB {
                 throw new Error(err)
             })
     }
+
+    // @ delete Data
+    async deleteOne(database,collention,deleteData) {
+        const { client ,coll } = this.initDBSetting(database,collention)
+        return coll.deleteOne(deleteData)
+        .then(()=> {
+            client.close()
+        })
+        .catch(err => {
+            client.close()
+            throw new Error(err)
+        })
+    }
 }
 
 
